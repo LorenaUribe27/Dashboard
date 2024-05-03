@@ -16,7 +16,7 @@ function updateFiltersDom() {
         categoria: document.body.querySelector(".selectCategory").value,
         mes: document.body.querySelector(".selectDate").value,
         //accion: document.body.querySelector(".selectAction").value,
-        sku: document.body.querySelector(".selectSku").value
+        sku: document.body.querySelector(".selectSku").value  
     }
 
 }
