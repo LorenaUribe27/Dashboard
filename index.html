@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./index.js" type="module"></script>
+    <link rel="stylesheet" type="text/css" href="./index.css">
+</head>
+
+<body>
+    <header class="header">
+        <img title="" alt="" src="https://mabeglobal.com/medias/?context=bWFzdGVyfHJvb3R8MTQxOHxpbWFnZS9wbmd8YUdRekwyZzVaUzg1TkRjd01EYzBOVFV5TXpVd3xkYWQ0M2ZjNzkwNjZlNmMwNjQyMGZmODJlMDQ4OTQxNDZiNTc4MTM5MGM2N2U3NWM4NWUzY2ZjOTNiN2Y2OGU2">
+
+        <div class="filtersContainer">
+
+            <div class="filterConuntry filterGeneral">
+                <label>Pais</label>
+                <select class="selectCountry selectGeneral">
+                    <option value="null">Seleccione</option>
+                    <option value="Colombia">Colombia</option>
+                    <option value="México">México</option>
+                    <option value="Perú">Perú</option>
+                    <option value="Chile">Chile</option>
+                </select>
+            </div>
+            <div class="filterDates filterGeneral">
+                <label>Mes</label>
+                <select class="selectDate selectGeneral">
+                    <option value="null">Seleccione</option>
+                </select>
+            </div>
+
+            <div class="filterCategory filterGeneral">
+                <label>Categoria</label>
+                <select class="selectCategory selectGeneral">
+                    <option value="null">Seleccione</option>
+                </select>
+            </div>
+
+
+
+
+
+        </div>
+
+    </header>
+
+    <main>
+
+        <div class="generalMudi">
+            <div class="containerGeneral">
+
+                <div class="titleGeneral">
+                    <div class="titlesGeneralTable"></div>
+                    <div class="titlesGeneralTable">Número de Sesiones</div>
+                    <div class="titlesGeneralTable">Duración</div>
+                    <div class="titlesGeneralTable">Añadir al carrito</div>
+                    <div class="titlesGeneralTable">Transacciones</div>
+                </div>
+
+                <div class="WOIGeneral">
+
+                    <div class="withOutInteractiontitle"> Sin interacción</div>
+                    <div class="withOutInteraction WOISesion"></div>
+                    <div class="withOutInteraction WOIDuration"></div>
+                    <div class="withOutInteraction WOIAddToCar"></div>
+                    <div class="withOutInteraction WOIPurchase"></div>
+
+                </div>
+
+                <div class="WIGeneral">
+
+                    <div class="withInteractionTitle"> Con interacción</div>
+                    <div class="withInteraction WISesion"></div>
+                    <div class="withInteraction WIDuration"></div>
+                    <div class="withInteraction WIAddToCar"></div>
+                    <div class="withInteraction WIPurchase"></div>
+
+                </div>
+
+                <div class="DiferenceContainer">
+
+                    <div class="DiferencePocent"> Diferencia %</div>
+                    <div class="DiferencePocent DPSesion"></div>
+                    <div class="DiferencePocent DPDuration"></div>
+                    <div class="DiferencePocent DPAddToCar"></div>
+                    <div class="DiferencePocent DPPurchase"></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="contentGraphicsMudi">
+
+            <div class="containerFilter filterGeneral">
+                <label for="">KPI</label>
+                <select class="selectGeneral kpiSelect">
+                    <option>Sesiones</option>
+                    <option>Duración</option>
+                    <option>Añadir al carrito</option>
+                    <option>Transacciones</option>
+                </select>
+            </div>
+
+            <div class="filterSku filterGeneral">
+                <label>Sku</label>
+                <select class="selectSku selectGeneral">
+                    <option value="null">Seleccione</option>
+                </select>
+            </div>
+            
+
+        </div>
+        <div class="graphicsMudiSessions ">
+            <div class="containerGraphic">
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</body>
+
+</html>

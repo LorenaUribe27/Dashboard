@@ -1,0 +1,122 @@
+body{
+    font-family: Nunito;
+}
+
+*{
+    margin: 0;
+    padding: 0;
+}
+
+.header{
+    width: 100%;
+    height: 100px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    -webkit-box-shadow: 2px -10px 47px 0px rgba(0,0,0,0.36);
+    -moz-box-shadow: 2px -10px 47px 0px rgba(0,0,0,0.36);
+    box-shadow: 2px -10px 47px 0px rgba(0,0,0,0.36);
+}
+
+.filtersContainer , .contentGraphicsMudi{
+    width: max-content;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+}
+
+
+
+
+/* General Mudi */
+.generalMudi{
+    width: 100%;
+    height: max-content;
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+}
+
+.containerGeneral{
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    height: max-content;
+    margin: 40px auto;
+}
+.titlesGeneralTable{
+    background-color: #007297;
+    color: #fff;
+    font-weight: 600;
+}
+.withOutInteractiontitle , .withInteractionTitle{
+    color: white;
+    background-color: #f47920;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-right: 2px solid rgb(207, 207, 207);
+
+}
+
+.WOIGeneral , .WIGeneral{
+    border-bottom: 2px solid rgb(207, 207, 207);
+}
+.withOutInteraction , .withInteraction, .DiferencePocent{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    padding: 0;
+    border-right: 2px solid rgb(207, 207, 207);
+}
+
+
+
+.DiferenceContainer{
+    font-weight: 600;
+    font-size: 20px;
+    border-bottom: 2px solid rgb(207, 207, 207);
+    background-color: rgb(224, 223, 223);
+}
+
+
+
+
+.titleGeneral , .WOIGeneral , .WIGeneral , .DiferenceContainer{
+    width: 100%;
+    display: flex;
+}
+
+.titleGeneral div , .WOIGeneral div , .WIGeneral div , .DiferenceContainer div{
+    width: 20%;
+    text-align: center;
+}
+ .titleGeneral div:first-child{
+  opacity: 0;
+ }
+
+.containerGraphic{
+    width: 45%;
+}
+
+
+.selectGeneral{
+    font-family: Nunito;
+    height: 35px;
+    width: 100px;
+    font-size: 15px;
+}
+
+.filterGeneral{
+    padding: 20px 70px 20px 20px;
+}
+
+
+
+.titlesGeneralTable{
+    padding: 20px 20px 20px 20px;
+}
