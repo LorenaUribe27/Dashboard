@@ -11,39 +11,65 @@
 </head>
 
 <body>
+    <!-- header -->
     <header class="header">
-        <img title="" alt=""
-            src="https://mabeglobal.com/medias/?context=bWFzdGVyfHJvb3R8MTQxOHxpbWFnZS9wbmd8YUdRekwyZzVaUzg1TkRjd01EYzBOVFV5TXpVd3xkYWQ0M2ZjNzkwNjZlNmMwNjQyMGZmODJlMDQ4OTQxNDZiNTc4MTM5MGM2N2U3NWM4NWUzY2ZjOTNiN2Y2OGU2">
+        <div class="containerLogos">
+            <img class="logoMabe" title="" alt=""
+                src="https://mabeglobal.com/medias/?context=bWFzdGVyfHJvb3R8MTQxOHxpbWFnZS9wbmd8YUdRekwyZzVaUzg1TkRjd01EYzBOVFV5TXpVd3xkYWQ0M2ZjNzkwNjZlNmMwNjQyMGZmODJlMDQ4OTQxNDZiNTc4MTM5MGM2N2U3NWM4NWUzY2ZjOTNiN2Y2OGU2">
+            <img class="logoMudi" title="" alt="" src="https://mudi.com.co/Assets/SVG/LogoMudi.svg">
+        </div>
 
         <div class="filtersContainer">
 
             <div class="filterConuntry filterGeneral">
-                <label>Pais</label>
+                <label>Pais:</label>
                 <select class="selectCountry selectGeneral">
-                    <option value="null">Seleccione</option>
                     <option value="Colombia">Colombia</option>
                     <option value="México">México</option>
                     <option value="Perú">Perú</option>
                     <option value="Chile">Chile</option>
                 </select>
             </div>
-            <div class="filterDates filterGeneral">
-                <label>Mes</label>
-                <select class="selectDate selectGeneral">
-                    <option value="null">Seleccione</option>
-                </select>
-            </div>
 
             <div class="filterCategory filterGeneral">
-                <label>Categoria</label>
+                <label>Categoria:</label>
                 <select class="selectCategory selectGeneral">
                     <option value="null">Seleccione</option>
+                    <option value="Aires">Aires</option>
+                    <option value="Calentadores">Calentadores</option>
+                    <option value="Lavado">Lavado</option>
+                    <option value="Refrigeración">Refrigeración</option>
+                    <option value="Empotre">Empotre</option>
+                    <option value="Estufas">Estufas</option>
+                    <option value="Globales">Globales</option>
                 </select>
             </div>
 
+            <div class="filterDates filterGeneral">
+                <label>Mes:</label>
+                <select class="selectDate selectGeneral">
+                    <option value="null">Seleccione</option>
+                    <option value="Enero">Enero</option>
+                    <option value="Febrero">Febrero</option>
+                    <option value="Marzo">Marzo</option>
+                    <option value="Abril">Abril</option>
+                    <option value="Mayo">Mayo</option>
+                    <option value="Junio">Junio</option>
+                    <option value="Julio">Julio</option>
+                    <option value="Agosto">Agosto</option>
+                    <option value="Septiembre">Septiembre</option>
+                    <option value="Octubre">Octubre</option>
+                    <option value="Noviembre">Noviembre</option>
+                    <option value="Diciembre">Diciembre</option>
+                </select>
+            </div>
 
-
-
+            <div class="filterSku filterGeneral">
+                <label>Sku:</label>
+                <select class="selectSku selectGeneral">
+                    <option value="null">Seleccione</option>
+                </select>
+            </div>
 
         </div>
 
@@ -52,7 +78,7 @@
     <div class="breadcrumbs">
         <a class="breadcrumbs__item pais">País</a>
         <a class="breadcrumbs__item mes">Mes</a>
-        <a class="breadcrumbs__item categoria">Categoria</a>
+        <a class="breadcrumbs__item categoria">Categoría</a>
     </div>
 
     <main>
@@ -61,7 +87,7 @@
             <div class="containerGeneral">
 
                 <div class="titleGeneral">
-                    <div class="titlesGeneralTable"></div>
+                    <div class="titlesGeneralTable">Toltal SKU:</div>
                     <div class="titlesGeneralTable">Usabilidad</div>
                     <div class="titlesGeneralTable">Engagement</div>
                     <div class="titlesGeneralTable">Add to cart</div>
@@ -71,7 +97,7 @@
                 <div class="WOIGeneral">
 
                     <div class="withOutInteractiontitle"> Sin interacción</div>
-                    <div class="withOutInteraction WOISesion"></div>
+                    <div class="withOutInteraction WOISesion  "></div>
                     <div class="withOutInteraction WOIDuration"></div>
                     <div class="withOutInteraction WOIAddToCar"></div>
                     <div class="withOutInteraction WOIPurchase"></div>
@@ -105,24 +131,17 @@
         <div class="contentGraphicsMudi">
 
             <div class="containerFilter filterGeneral">
-                <label for="">KPI</label>
+                <label for="">Historicos KPI:</label>
                 <select class="selectGeneral kpiSelect">
-                    <option>Sesiones</option>
-                    <option>Duración</option>
-                    <option>Añadir al carrito</option>
-                    <option>Transacciones</option>
+                    <option value="usability">Sesiones</option>
+                    <option value="engagement">Duración</option>
+                    <option value="addToCar">Añadir al carrito</option>
+                    <option value="purchase">Transacciones</option>
                 </select>
             </div>
-
-            <div class="filterSku filterGeneral">
-                <label>Sku</label>
-                <select class="selectSku selectGeneral">
-                    <option value="null">Seleccione</option>
-                </select>
-            </div>
-
 
         </div>
+
         <div class="graphicsMudiSessions ">
             <div class="containerGraphic">
                 <canvas id="myChart"></canvas>
