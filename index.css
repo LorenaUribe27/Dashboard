@@ -92,3 +92,14 @@ body {
     justify-content: center;
     align-items: center;
 }
+
+.retailerContainerMenu {
+    opacity: 0;
+    transition: opacity .2s ease-in-out;
+    width: 85%;
+    margin: 5px auto;
+}
+
+.logoRetailMenu {
+    width: 100%;
+}

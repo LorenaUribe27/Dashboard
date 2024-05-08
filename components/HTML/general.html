@@ -102,7 +102,15 @@
                 </svg>
 
                 <select class="selectCategory selectGeneral">
-                    <option value="null">Seleccione Categoria</option>
+                    <option value="null">Seleccione Categoría</option>
+                    <option value="Aires">Aires</option>
+                    <option value="Calentadores">Calentadores</option>
+                    <option value="Campanas">Campanas</option>
+                    <option value="Lavado">Lavado</option>
+                    <option value="Refrigeración">Refrigeración</option>
+                    <option value="Empotre">Empotre</option>
+                    <option value="Estufas">Estufas</option>
+                    <option value="Globales">Globales</option>
                 </select>
             </div>
 
@@ -197,8 +205,10 @@
 
     </section>
 
+    <!-- contenedor de el historico  -->
     <section class="containerHistoric">
 
+        <!-- Area de filtros -->
         <div class="filterArea">
 
             <div class="kpiSelect filterGeneral" title="Seleccione un KPI">
@@ -218,22 +228,25 @@
                 </svg>
 
                 <select class="selectGeneral kpiSelect">
-                    <option value="usability">Sesiones</option>
-                    <option value="engagement">Duración</option>
-                    <option value="addToCar">Añadir al carrito</option>
-                    <option value="purchase">Transacciones</option>
+                    <option value="usabilidad">Usabilidad</option>
+                    <option value="duracion_sesion">Duración sesión</option>
+                    <option value="añadir_al_carrito">Añadir al carrito</option>
+                    <option value="conversion">Conversiones</option>
                 </select>
 
             </div>
 
         </div>
 
+        <!-- contenido pricnipal -->
         <div class="contentHistoricGraphic">
 
+            <!-- compración por tiempo -->
             <div class="containerHistoricGraphic">
                 <canvas id="historicGraphic" class="historicGraphicClass"></canvas>
             </div>
 
+            <!-- por dispositovos -->
             <div class="containerGraphicDevice">
                 <canvas id="chartDevice" class="graphicTableKpiDevice"></canvas>
             </div>

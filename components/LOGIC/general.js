@@ -1,7 +1,12 @@
 import dataGeneralxsku from '../dataGeneralsku.js';
+import device from '../dispositivo.js';
 
 /** Variables */
-let filtersValue = {} , arrayToGraphic=[] , arrayToTable=[], kpiActual = null;
+let 
+filtersValue = {} , 
+arrayToGraphic=[] , 
+arrayToTable=[], 
+kpiActual = 'usabilidad';
 
 /** Actualizar los valores del filtro */
 function updateValuesFilters(){
@@ -9,7 +14,8 @@ function updateValuesFilters(){
     filtersValue={
         Pais        : document.body.querySelector('.selectCountry').value,
         Mes         : document.body.querySelector('.selectDate').value,
-        Categoria   : document.body.querySelector('.selectCategory').value
+        Categoria   : document.body.querySelector('.selectCategory').value,
+        Sku         : document.body.querySelector('.selectSku').value
     };
 };
 
@@ -25,20 +31,36 @@ function filterProcess(){
 
     /** Empezamos el proceso de filtrado */
     filtersValue.Pais       !== "null" && ( filterArray = dataGeneralxsku.filter( registry => registry.pais == filtersValue.Pais)           );
-    filtersValue.Categoria  !== "null" && ( filterArray = filterArray.filter    ( registry => registry.categoria == filtersValue.Categoria) );
     
     /** Actualizamos el array para renderizar las gráficas */
     arrayToGraphic = filterArray;
     
-    filtersValue.Mes        !== "null" && ( filterArray = filterArray.filter    ( registry => registry.Mes == filtersValue.Mes)             );    
+    filtersValue.Categoria  !== "null" && ( filterArray = filterArray.filter    ( registry => registry.categoria == filtersValue.Categoria) );
+    filtersValue.Mes        !== "null" && ( filterArray = filterArray.filter    ( registry => registry.Mes == filtersValue.Mes)             );  
+    filtersValue.Sku        !== "null" && ( filterArray = filterArray.filter    ( registry => registry.sku == filtersValue.Sku)             );
 
     /** Actaulimos el array para renderizar la tabla */
     arrayToTable = filterArray;
+
+    createOptionSku(arrayToTable)
 
     /** Se contruye la tabla de datos generales */
     buildTable()
 };
 
+/** función para creación de lista de SKUS */
+function createOptionSku(array){
+
+    document.body.querySelector('.selectSku').innerHTML=``;
+    document.body.querySelector('.selectSku').innerHTML+=`<option value="null">Seleccione SKU</option>`
+
+    array.map( registry =>{
+        
+        if (registry.sku == "null" || registry.sku == "Null" || registry.sku == "") { return };
+        document.body.querySelector('.selectSku').innerHTML+=`<option value="${registry.sku}">${registry.sku}</option>`
+    })
+
+}
 
 
 /** ___________________ Constructores _________________ */
@@ -97,8 +119,8 @@ function filterProcess(){
         elementToReturn.withOut          = Math.ceil((timeWOI.hours+timeWOI.minutes+timeWOI.seconds) / array.length);
         elementToReturn.withOutFormat    = `${parseInt(elementToReturn.withOut/60)}:${parseInt(elementToReturn.withOut%60)}`;
     
-        elementToReturn.diference       = parseInt( ((elementToReturn.with / elementToReturn.withOut)*100).toFixed(0) );
-        elementToReturn.diferenceFormat = `${parseInt(elementToReturn.diference/60)}:${parseInt(elementToReturn.diference%60)}`;
+        elementToReturn.diference        = parseInt( ((elementToReturn.with / elementToReturn.withOut)*100).toFixed(0) );
+        elementToReturn.diferenceFormat  = `${parseInt(elementToReturn.diference/60)}:${parseInt(elementToReturn.diference%60)}`;
 
         return elementToReturn;
     };
@@ -145,6 +167,47 @@ function filterProcess(){
 
         return elementToReturn;
     };
+
+    /** Función para construir la información del dispositivo */
+    function buildInfoDevice(){
+
+        let 
+        elementToCreate = [],
+        country         = document.body.querySelector('.selectCountry').value,
+        countryArray    = Object.entries(device).filter( ([key,value]) => key == country ),
+        kpiArray        = Object.entries(countryArray[0][1]).filter( ([key,value]) => key == kpiActual )    
+
+
+        switch(kpiActual){
+
+            case "usabilidad":
+                elementToCreate.push( (kpiArray[0][1].desk   / ((kpiArray[0][1].Without_desk   + kpiArray[0][1].desk))   *100).toFixed(2) );
+                elementToCreate.push( (kpiArray[0][1].tablet / ((kpiArray[0][1].Without_tablet + kpiArray[0][1].tablet)) *100).toFixed(2) );
+                elementToCreate.push( (kpiArray[0][1].mobile / ((kpiArray[0][1].Without_mobile + kpiArray[0][1].mobile ))*100).toFixed(2) );
+            break;
+
+            case "duracion_sesion":
+                elementToCreate.push(  parseInt( (( kpiArray[0][1].desk    / kpiArray[0][1].Without_desk    )*100).toFixed(0) ) );
+                elementToCreate.push(  parseInt( (( kpiArray[0][1].tablet  / kpiArray[0][1].Without_tablet  )*100).toFixed(0) ) );
+                elementToCreate.push(  parseInt( (( kpiArray[0][1].mobile  / kpiArray[0][1].Without_mobile  )*100).toFixed(0) ) );
+            break;
+
+            case "añadir_al_carrito":
+                elementToCreate.push( (( kpiArray[0][1].desk   / kpiArray[0][1].Without_desk   )*100).toFixed(0) );
+                elementToCreate.push( (( kpiArray[0][1].tablet / kpiArray[0][1].Without_tablet )*100).toFixed(0) );
+                elementToCreate.push( (( kpiArray[0][1].mobile / kpiArray[0][1].Without_mobile )*100).toFixed(0) );
+            break;
+
+            case "conversion":
+                elementToCreate.push( ( kpiArray[0][1].desk   / kpiArray[0][1].Without_desk  *100).toFixed(0) );
+                elementToCreate.push( ( kpiArray[0][1].tablet / kpiArray[0][1].Without_tablet*100).toFixed(0) );
+                elementToCreate.push( ( kpiArray[0][1].mobile / kpiArray[0][1].Without_mobile*100).toFixed(0) );
+            break; 
+        };
+
+        graphicDevice(elementToCreate)
+    };
+
 
     /** Función para construir la estructura de las gráficas */
     function buildStructureToGraphics(array){
@@ -304,7 +367,6 @@ function filterProcess(){
 
         /** Función para renderizar la gráfica de Conversión */
         function graphicPurchase(object){
-            console.log(object)
 
             document.body.querySelector('.graphicPurchaseRender').innerHTML = ``;
 
@@ -363,10 +425,10 @@ function filterProcess(){
             new Chart(ctx, {
                 type: 'bar',
                 data: {
-                  labels: ['Mobile', 'Tablets', 'Desk'],
+                  labels: ['Desk', 'Tablets', 'Mobile'],
                   datasets: [{
                     label: '',
-                    data: [50, 90,400], 
+                    data: [values[0], values[1],values[2] ], 
                     backgroundColor: ['#ff8604', '#0082ac', '#ffaf00'],
                     hoverOffset: 4,
                     barThickness: 80,
@@ -382,7 +444,7 @@ function filterProcess(){
                     },
                     title: {
                       display: true,
-                      text: 'Histótico por dispositivo.',
+                      text: `Dispositivo por ${kpiActual}`,
                       color: '#0082ac' ,
                       font: {
                         size: 18 
@@ -445,23 +507,6 @@ function filterProcess(){
     
     };
 
-    /** Función pora construir la estructura de la tabla comparativa por paises */
-    function buildStructureToTable(){
-        let elementToReturn = {};
-
-        dataGeneralxsku.map( registry => { 
-            if ( !(registry.pais in elementToReturn)){ elementToReturn[registry.pais] = null };
-        })
-
-        Object.entries(elementToReturn).forEach( ([key]) =>{
-
-            let registry = dataGeneralxsku.filter( registry => registry.pais == key)
-            elementToReturn[key] = registry
-
-        })
-        return elementToReturn;
-    };
-
 
 /** _______________ Renderizadores _______________*/
 
@@ -472,8 +517,6 @@ function filterProcess(){
         const engagement    = buildEngagement(arrayToTable);
         const addToCar      = buildAddToCar(arrayToTable);
         const purchase      = buildPurchase(arrayToTable);
-
-        console.log(usability)
 
         /** Imprimiendo la usabilidad Con y Sin interacción */
         document.body.querySelector('.usabilityWith').innerHTML     = `Con interacción: <span class="valorKPI">${usability.with}</span>`;
@@ -521,25 +564,25 @@ function filterProcess(){
         const createStructure = buildStructureToGraphics(arrayToGraphic);
 
         switch(kpi){
-            case 'usability':
+            case 'usabilidad':
                 Object.entries(createStructure).forEach(([key])=>{
                     elementToReturn.months.push(key);
                     elementToReturn.diferences.push( buildUsability(createStructure[key]).diference )
                 });
                 break;
-            case 'engagement':
+            case 'duracion_sesion':
                 Object.entries(createStructure).forEach(([key])=>{
                     elementToReturn.months.push(key);
                     elementToReturn.diferences.push( buildEngagement(createStructure[key]).diference )
                 });
                 break;
-            case 'addToCar':
+            case 'añadir_al_carrito':
                 Object.entries(createStructure).forEach(([key])=>{
                     elementToReturn.months.push(key);
                     elementToReturn.diferences.push( buildAddToCar(createStructure[key]).diference )
                 });
                 break;
-            case 'purchase':
+            case 'conversion':
                 Object.entries(createStructure).forEach(([key])=>{
                     elementToReturn.months.push(key);
                     elementToReturn.diferences.push( buildPurchase(createStructure[key]).diference )
@@ -549,44 +592,21 @@ function filterProcess(){
         renderComparationGraphic(elementToReturn,kpi)
     };
 
-    /** Función para renderizar la tabla comparativa  */
-    function buildComparationCountry(){
-
-        let elementToReturn = {
-            country     : [],
-            usability   : [],
-            engagement  : [],
-            addTocar    : [],
-            purchase    : [],
-        };
-
-        const structure = buildStructureToTable();
-
-        Object.entries(structure).forEach(([key])=>{
-            elementToReturn.country.push(key)
-            elementToReturn.usability.push(buildUsability(structure[key]).diference)
-            elementToReturn.engagement.push(buildEngagement(structure[key]).diference)
-            elementToReturn.addTocar.push(buildAddToCar(structure[key]).diference)
-            elementToReturn.purchase.push(buildPurchase(structure[key]).diference)
-        });
-
-        console.log(elementToReturn)
-        return elementToReturn;
-    };
 
 
 /** Eventos que actualiza la información */
-document.body.querySelector('.selectCountry' ).addEventListener('input', ()=>{filterProcess(), buildGraphic(kpiActual)} , false);
+document.body.querySelector('.selectCountry' ).addEventListener('input', ()=>{filterProcess(); buildGraphic(kpiActual); buildInfoDevice()} , false);
 document.body.querySelector('.selectDate'    ).addEventListener('input', filterProcess , false);
 document.body.querySelector('.selectCategory').addEventListener('input', filterProcess , false);
+document.body.querySelector('.selectSku').addEventListener('input', filterProcess , false);
 
 /** Evento que construye la gráfica */
-document.body.querySelector('.kpiSelect').addEventListener('input', (e)=>{buildGraphic(e.target.value);  graphicDevice();} , false);
+document.body.querySelector('.kpiSelect').addEventListener('input', (e)=>{buildGraphic(e.target.value);  buildInfoDevice();} , false);
 
 filterProcess();
-buildGraphic("usability");
-graphicDevice();
-// buildComparationCountry();
+buildGraphic(kpiActual);
+buildInfoDevice();
+// buildComparationCountry()
 
 
 
