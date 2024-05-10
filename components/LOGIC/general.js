@@ -131,19 +131,23 @@ function createOptionSku(array){
         let elementToReturn = {
             with: 0,
             withOut: 0,
-            diference : null
+            diference : null, 
+            numberSessionWI: 0,
+            numberSessionWIO: 0 
         };
 
         array.forEach( registry => { 
             if(registry.AddToCartConInteraccion == 0 || registry.AddToCartSinInteraccion == 0){ return }
             elementToReturn.with    += parseFloat(registry.AddToCartConInteraccion.replace('%',''));   
-            elementToReturn.withOut += parseFloat(registry.AddToCartSinInteraccion.replace('%',''));   
+            elementToReturn.withOut += parseFloat(registry.AddToCartSinInteraccion.replace('%',''));
+            elementToReturn.numberSessionWI   += registry.AddToCartConI_sesiones
+            elementToReturn.numberSessionWIO  += registry.AddToCartSinI_sesiones
+          
         });
 
-        elementToReturn.with        = Math.ceil( elementToReturn.with    / array.length            );
-        elementToReturn.withOut     = Math.ceil( elementToReturn.withOut / array.length            );
-        elementToReturn.diference   = ((elementToReturn.with / elementToReturn.withOut)*100).toFixed(0);
-
+        elementToReturn.with              = Math.ceil( elementToReturn.with    / array.length            );
+        elementToReturn.withOut           = Math.ceil( elementToReturn.withOut / array.length            );
+        elementToReturn.diference         = ((elementToReturn.with / elementToReturn.withOut)*100).toFixed(0);
         return elementToReturn;
     };
 
@@ -153,18 +157,22 @@ function createOptionSku(array){
         let elementToReturn = {
             with: 0,
             withOut: 0,
-            diference :0
+            diference :0,
+            numberTransactionsWI: 0, 
+            numberTransactionsWIO: 0
         }
 
         array.forEach(element => {    
-            elementToReturn.with       += element.TransaccionesConInteraccion;
-            elementToReturn.withOut    += element.TransaccionesSinInteraccion;
+            elementToReturn.with                   += element.TransaccionesConInteraccion;
+            elementToReturn.withOut                += element.TransaccionesSinInteraccion;
+            elementToReturn.numberTransactionsWI   += element.NumeroTransaccionesCon;
+            elementToReturn.numberTransactionsWIO  += element.NumeroTransaccionesSin;
         })
-
+        
         elementToReturn.with        = (elementToReturn.with/array.length).toFixed(3);
         elementToReturn.withOut     = (elementToReturn.withOut/array.length).toFixed(3);
         elementToReturn.diference   = (elementToReturn.with/elementToReturn.withOut*100).toFixed(0);
-
+      
         return elementToReturn;
     };
 
@@ -529,14 +537,23 @@ function createOptionSku(array){
         document.body.querySelector('.diferenceEngagement').innerHTML= `% Diferencia : ${engagement.diference}%`;
 
         /** Impirmiendo el add To Car Con y Ain interacción */
-        document.body.querySelector('.addToCarWith').innerHTML      = `Con interacción: <span class="valorKPI">${addToCar.with}%</span>`;
-        document.body.querySelector('.addToCarWithOut').innerHTML   = `Sin interacción: <span class="valorKPI">${addToCar.withOut}%</span>`;
+        
+        document.body.querySelector('.addToCarWith').innerHTML      = `Con interacción: <span class="valorKPI"> ${addToCar.numberSessionWI}(${addToCar.with}%)</span>`;
+        document.body.querySelector('.addToCarWithOut').innerHTML   = `Sin interacción: <span class="valorKPI">${addToCar.numberSessionWIO}(${addToCar.withOut}%)</span>`;
         document.body.querySelector('.diferenceAddToCar').innerHTML = `% Diferencia : ${addToCar.diference}%`;
 
         /** Imprimiendo la conversión Con y Sin  interacción */
-        document.body.querySelector('.purchaseWith').innerHTML      = `Con interacción: <span class="valorKPI">${purchase.with}%</span>`;
-        document.body.querySelector('.purchaseWithOut').innerHTML   = `Sin interacción: <span class="valorKPI">${purchase.withOut}%</span>`;
-        document.body.querySelector('.diferencePurchase').innerHTML = `% Diferencia : ${purchase.diference}%`;
+        document.body.querySelector('.purchaseWith').innerHTML      = `Con interacción: <span class="valorKPI">${purchase.numberTransactionsWI}(${(purchase.numberTransactionsWI/usability.with).toFixed(3)}%)</span>`;
+        document.body.querySelector('.purchaseWithOut').innerHTML   = `Sin interacción: <span class="valorKPI">${purchase.numberTransactionsWIO}(${(purchase.numberTransactionsWIO/usability.withOut).toFixed(3)}%)</span>`;
+
+        // Variables para obtener la diferencia a partir de la operación hecha en purchaseWith y purchaseWithOut
+        const conInteraccion             = document.body.querySelector('.purchaseWith');
+        const purchaseWithPercentage     = parseFloat(conInteraccion.querySelector('.valorKPI').textContent.match(/\((\d+\.\d+)\%\)/)[1]);
+        const sinInteraccion             = document.body.querySelector('.purchaseWithOut');
+        const purchaseWOIPercentage      = parseFloat(sinInteraccion.querySelector('.valorKPI').textContent.match(/\((\d+\.\d+)\%\)/)[1]);
+        const diferencia                 = (purchaseWithPercentage / purchaseWOIPercentage *100).toFixed(0);
+
+        document.body.querySelector('.diferencePurchase').innerHTML = `% Diferencia : ${diferencia}%`;
 
         /** Renderizar la gráfica de usabilidad */
         graphicUsability(usability);
@@ -594,6 +611,7 @@ function createOptionSku(array){
 
 
 
+
 /** Eventos que actualiza la información */
 document.body.querySelector('.selectCountry' ).addEventListener('input', ()=>{filterProcess(); buildGraphic(kpiActual); buildInfoDevice()} , false);
 document.body.querySelector('.selectDate'    ).addEventListener('input', filterProcess , false);
@@ -607,7 +625,6 @@ filterProcess();
 buildGraphic(kpiActual);
 buildInfoDevice();
 // buildComparationCountry()
-
 
 
 
