@@ -81,6 +81,7 @@
                     <option value="Febrero">Febrero</option>
                     <option value="Marzo">Marzo</option>
                     <option value="Abril">Abril</option>
+                    <option value="Mayo">Mayo</option>
                 </select>
             </div>
 
@@ -209,7 +210,7 @@
     <section class="containerHistoric">
 
         <!-- Area de filtros -->
-        <div class="filterArea">
+        <div class="filterArea" >
 
             <div class="kpiSelect filterGeneral" title="Seleccione un KPI">
 
@@ -225,9 +226,9 @@
                             </path>
                         </g>
                     </g>
-                </svg>
+                </svg> <label class="selectGeneral">Indicadores</label>
 
-                <select class="selectGeneral kpiSelect">
+                <select class="selectGeneral kpiSelect" style="display: none;">
                     <option value="usabilidad">Usabilidad</option>
                     <option value="duracion_sesion">Duración sesión</option>
                     <option value="añadir_al_carrito">Añadir al carrito</option>
@@ -247,8 +248,8 @@
             </div>
 
             <!-- por dispositovos -->
-            <div class="containerGraphicDevice">
-                <canvas id="chartDevice" class="graphicTableKpiDevice"></canvas>
+            <div class="containerGraphicUsability">
+                <canvas id="chartCountryUsability" class="graphicTableUsability"></canvas>
             </div>
 
         </div>

@@ -5,8 +5,10 @@ import device from '../dispositivo.js';
 let 
 filtersValue = {} , 
 arrayToGraphic=[] , 
-arrayToTable=[], 
-kpiActual = 'usabilidad';
+arrayToTable=[],
+arrayToGraphicAll =[],
+kpiActual = ['usabilidad','añadir al carrito','conversion'],
+paisActual =['Colombia','México','Chile','Perú'];
 
 /** Actualizar los valores del filtro */
 function updateValuesFilters(){
@@ -21,32 +23,43 @@ function updateValuesFilters(){
 
 
 /** Se filtra por País por Mes y por Categría */
-function filterProcess(){
-
+function filterProcess() {
     /** Nuevo Array  */
-    let filterArray=[];
+    let filterArray = [];
     
     /** Actualizamos los valores de los filtros  */
     updateValuesFilters();
 
     /** Empezamos el proceso de filtrado */
-    filtersValue.Pais       !== "null" && ( filterArray = dataGeneralxsku.filter( registry => registry.pais == filtersValue.Pais)           );
-    
+    filtersValue.Pais !== "null" && (filterArray = dataGeneralxsku.filter(registry => registry.pais == filtersValue.Pais));
+
     /** Actualizamos el array para renderizar las gráficas */
     arrayToGraphic = filterArray;
     
-    filtersValue.Categoria  !== "null" && ( filterArray = filterArray.filter    ( registry => registry.categoria == filtersValue.Categoria) );
-    filtersValue.Mes        !== "null" && ( filterArray = filterArray.filter    ( registry => registry.Mes == filtersValue.Mes)             );  
-    filtersValue.Sku        !== "null" && ( filterArray = filterArray.filter    ( registry => registry.sku == filtersValue.Sku)             );
+    filtersValue.Categoria !== "null" && (filterArray = filterArray.filter(registry => registry.categoria == filtersValue.Categoria));
+    filtersValue.Mes !== "null" && (filterArray = filterArray.filter(registry => registry.Mes == filtersValue.Mes));
+    filtersValue.Sku !== "null" && (filterArray = filterArray.filter(registry => registry.sku == filtersValue.Sku));
 
-    /** Actaulimos el array para renderizar la tabla */
+    /** Actualizamos el array para renderizar la tabla */
     arrayToTable = filterArray;
 
-    createOptionSku(arrayToTable)
+    /** Agrupar los datos por país */
+    const groupedByCountry = dataGeneralxsku.reduce((acc, registry) => {
+        if (!acc[registry.pais]) {
+            acc[registry.pais] = [];
+        }
+        acc[registry.pais].push(registry);
+        return acc;
+    }, {});
 
-    /** Se contruye la tabla de datos generales */
-    buildTable()
-};
+    /** Crear el array para `arrayToGraphicUsabillity` */
+    arrayToGraphicAll = Object.values(groupedByCountry);
+    createOptionSku(arrayToGraphic);
+
+    /** Se construye la tabla de datos generales */
+    buildTable();
+}
+
 
 /** función para creación de lista de SKUS */
 function createOptionSku(array){
@@ -66,9 +79,40 @@ function createOptionSku(array){
 /** ___________________ Constructores _________________ */
 
     /** Función para construir la usabilidad apartir de un array de registros */
-    function buildUsability(array){
+    function buildUsabilityByCountry(array) {
+        let countriesData = {};
+    
+        array.forEach((registry) => {
+            if (!countriesData[registry.pais]) {
+                countriesData[registry.pais] = {
+                    with: 0,
+                    withOut: 0,
+                    difference: 0
+                };
+            }
+    
+            countriesData[registry.pais].with += registry.conInteraccion;
+            countriesData[registry.pais].withOut += registry.sinInteraccion;
+        });
+    
+        // Calculamos la diferencia para cada país
+        for (let country in countriesData) {
+            let countryData = countriesData[country];
+            countryData.difference = ((countryData.with / (countryData.withOut + countryData.with)) * 100).toFixed(0);
+        }
+    
+        return countriesData;
+    }
+    buildUsabilityByCountry(dataGeneralxsku);
+    
 
+
+
+
+    // Función usabilidad general
+    function buildUsability(array){
         let elementToreturn = {
+            paises:null,
             with:0,
             withOut:0,
             diference:0
@@ -77,11 +121,14 @@ function createOptionSku(array){
         array.map((registry)=>{
             elementToreturn.with    += registry.conInteraccion;
             elementToreturn.withOut += registry.sinInteraccion;
+            elementToreturn.paises   = registry.pais;
+           
         })
-
-        elementToreturn.diference = (elementToreturn.with / ((elementToreturn.withOut + elementToreturn.with))*100).toFixed(2)
+       
+        elementToreturn.diference = (elementToreturn.with / ((elementToreturn.withOut + elementToreturn.with))*100).toFixed(0)
         return elementToreturn;
     };
+
 
     /** Función para construir el engagement apartir de un array de registros */
     function buildEngagement(array){
@@ -129,6 +176,7 @@ function createOptionSku(array){
     function buildAddToCar(array){
 
         let elementToReturn = {
+            paises:null,
             with: 0,
             withOut: 0,
             diference : null, 
@@ -142,9 +190,12 @@ function createOptionSku(array){
             elementToReturn.withOut += parseFloat(registry.AddToCartSinInteraccion.replace('%',''));
             elementToReturn.numberSessionWI   += registry.AddToCartConI_sesiones
             elementToReturn.numberSessionWIO  += registry.AddToCartSinI_sesiones
+            elementToReturn.paises = registry.pais
+          
+          
           
         });
-
+         
         elementToReturn.with              = Math.ceil( elementToReturn.with    / array.length            );
         elementToReturn.withOut           = Math.ceil( elementToReturn.withOut / array.length            );
         elementToReturn.diference         = ((elementToReturn.with / elementToReturn.withOut)*100).toFixed(0);
@@ -155,6 +206,7 @@ function createOptionSku(array){
     function buildPurchase(array){
 
         let elementToReturn = {
+            paises:null,
             with: 0,
             withOut: 0,
             diference :0,
@@ -167,6 +219,7 @@ function createOptionSku(array){
             elementToReturn.withOut                += element.TransaccionesSinInteraccion;
             elementToReturn.numberTransactionsWI   += element.NumeroTransaccionesCon;
             elementToReturn.numberTransactionsWIO  += element.NumeroTransaccionesSin;
+            // elementToReturn                         = element.Pais;
         })
         
         elementToReturn.with        = (elementToReturn.with/array.length).toFixed(3);
@@ -177,49 +230,9 @@ function createOptionSku(array){
     };
 
     /** Función para construir la información del dispositivo */
-    function buildInfoDevice(){
-
-        let 
-        elementToCreate = [],
-        country         = document.body.querySelector('.selectCountry').value,
-        countryArray    = Object.entries(device).filter( ([key,value]) => key == country ),
-        kpiArray        = Object.entries(countryArray[0][1]).filter( ([key,value]) => key == kpiActual )    
-
-
-        switch(kpiActual){
-
-            case "usabilidad":
-                elementToCreate.push( (kpiArray[0][1].desk   / ((kpiArray[0][1].Without_desk   + kpiArray[0][1].desk))   *100).toFixed(2) );
-                elementToCreate.push( (kpiArray[0][1].tablet / ((kpiArray[0][1].Without_tablet + kpiArray[0][1].tablet)) *100).toFixed(2) );
-                elementToCreate.push( (kpiArray[0][1].mobile / ((kpiArray[0][1].Without_mobile + kpiArray[0][1].mobile ))*100).toFixed(2) );
-            break;
-
-            case "duracion_sesion":
-                elementToCreate.push(  parseInt( (( kpiArray[0][1].desk    / kpiArray[0][1].Without_desk    )*100).toFixed(0) ) );
-                elementToCreate.push(  parseInt( (( kpiArray[0][1].tablet  / kpiArray[0][1].Without_tablet  )*100).toFixed(0) ) );
-                elementToCreate.push(  parseInt( (( kpiArray[0][1].mobile  / kpiArray[0][1].Without_mobile  )*100).toFixed(0) ) );
-            break;
-
-            case "añadir_al_carrito":
-                elementToCreate.push( (( kpiArray[0][1].desk   / kpiArray[0][1].Without_desk   )*100).toFixed(0) );
-                elementToCreate.push( (( kpiArray[0][1].tablet / kpiArray[0][1].Without_tablet )*100).toFixed(0) );
-                elementToCreate.push( (( kpiArray[0][1].mobile / kpiArray[0][1].Without_mobile )*100).toFixed(0) );
-            break;
-
-            case "conversion":
-                elementToCreate.push( ( kpiArray[0][1].desk   / kpiArray[0][1].Without_desk  *100).toFixed(0) );
-                elementToCreate.push( ( kpiArray[0][1].tablet / kpiArray[0][1].Without_tablet*100).toFixed(0) );
-                elementToCreate.push( ( kpiArray[0][1].mobile / kpiArray[0][1].Without_mobile*100).toFixed(0) );
-            break; 
-        };
-
-        graphicDevice(elementToCreate)
-    };
-
 
     /** Función para construir la estructura de las gráficas */
     function buildStructureToGraphics(array){
-
         /** La gráfica acepta dos arreglos con valores para renderizar */
         let elementToReturn = {}
 
@@ -240,7 +253,6 @@ function createOptionSku(array){
 
         /** Función para renderizar la grafica de la card usabilidad */
         function graphicUsability(object){
-
             document.body.querySelector('.graphicUsabilityRender').innerHTML = ``;
 
             const 
@@ -417,91 +429,52 @@ function createOptionSku(array){
             });
         };
 
-        function graphicDevice(values){
-
-            document.body.querySelector('.containerGraphicDevice').innerHTML = ``;
-
-            const 
-            canvas = document.createElement('CANVAS');
-            canvas.id="chartDevice";
-            canvas.classList.add('graphicTableKpiDevice');
-
-            document.body.querySelector('.containerGraphicDevice').appendChild(canvas);
-
-            const ctx = document.body.querySelector('#chartDevice').getContext('2d');
-
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                  labels: ['Desk', 'Tablets', 'Mobile'],
-                  datasets: [{
-                    label: '',
-                    data: [values[0], values[1],values[2] ], 
-                    backgroundColor: ['#ff8604', '#0082ac', '#ffaf00'],
-                    hoverOffset: 4,
-                    barThickness: 80,
-                    borderWidth: 3,
-                    borderRadius: 15
-                  }]
-                },
-                options: {
-                  plugins: {
-                    legend: {
-                      display: false, 
-                      position: 'top' 
-                    },
-                    title: {
-                      display: true,
-                      text: `Dispositivo por ${kpiActual}`,
-                      color: '#0082ac' ,
-                      font: {
-                        size: 18 
-                      },
-                    }
-                  }
-                }
-            });
-
-        };
 
 
-    /** Función para renderizar la gráfica para la comparación de HISTORICA  */
-    function renderComparationGraphic(data,kpi){
-
-        document.body.querySelector('#historicGraphic').remove()
-        
-        const 
-        canvas = document.createElement('CANVAS');;
-        canvas.id='historicGraphic';
-        canvas.classList.add('historicGraphicClass')
+    /** Función para renderizar la gráfica para la comparación de kpis x país  */
+    function renderComparationGraphic(data, kpis) {    
+        // Remover el canvas existente
+        document.body.querySelector('#historicGraphic').remove();
+        // Crear y añadir un nuevo canvas
+        const canvas = document.createElement('CANVAS');
+        canvas.id = 'historicGraphic';
+        canvas.classList.add('historicGraphicClass');
         document.body.querySelector('.containerHistoricGraphic').appendChild(canvas);
-
+    
         var ctx = document.getElementById('historicGraphic').getContext('2d');
+    
+        // Crear los datasets para cada KPI
+        const datasets = kpis.map((kpi, index) => ({
+            label: kpi,
+            data: data[kpi].diferences,
+            backgroundColor: [ '#007297', '#f47920', '#ffaf00'][index % 3],
+            borderColor: [ '#007297', '#f47920', '#ffaf00'][index % 3],
+            fill: false,
+            pointRadius: 5,
+            pointHoverRadius: 10
+        }));
+
+
         new Chart(ctx, {
             type: 'line',
             data: {
-                labels: data.months ,
-                datasets: [{
-                    data: data.diferences,
-                    backgroundColor: [ '#007297', ' #f47920', '#ffaf00'] ,
-                    pointRadius: 8, 
-                    pointHoverRadius: 10
-                }]
+                labels: data.months,
+                datasets: datasets
             },
             options: {
-                plugins:{
+                plugins: {
                     legend: {
-                        display: false, 
-                        position: 'top' 
-                      },
-                      title: {
                         display: true,
-                        text: `Histórico por ${kpi}`,
-                        color: '#0082ac' ,
+                        position: 'top'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Indicadores por país',
+                        color: '#0082ac',
                         font: {
-                          size: 18 
-                        },
-                      }
+                            size: 18
+                        }
+                    }
                 },
                 scales: {
                     y: {
@@ -510,11 +483,72 @@ function createOptionSku(array){
                 },
                 barThickness: 100
             }
-            
         });
-    
-    };
+    }
 
+
+
+    /** Función para renderizar la gráfica para la comparación de Usabilidad  */
+    function renderComparationGraphicUsability(data, paises) {
+        console.log(data);
+    
+        // Remover el canvas existente
+        const existingCanvas = document.getElementById('chartCountryUsability');
+        if (existingCanvas) {
+            existingCanvas.remove();
+        }
+    
+        // Crear y añadir un nuevo canvas
+        const canvas = document.createElement('CANVAS');
+        canvas.id = 'chartCountryUsability';
+        canvas.classList.add('graphicTableUsability');
+        document.querySelector('.containerGraphicUsability').appendChild(canvas);
+    
+        const ctx = document.getElementById('chartCountryUsability').getContext('2d');
+    
+        // Crear los datasets para cada país
+        const datasets = paises.map((pais, index) => ({
+            label: pais,
+            data: data[pais].differences,
+            backgroundColor: ['#007297', '#f47920', '#ffaf00','#bf0e09'][index % 4],
+            borderColor: ['#007297', '#f47920', '#ffaf00','#bf0e09'][index % 4],
+            fill: false,
+            pointRadius: 3,
+            pointHoverRadius: 10
+        }));
+    
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.months,
+                datasets: datasets
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Usabilidad por país',
+                        color: '#0082ac',
+                        font: {
+                            size: 18
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                barThickness: 100
+            }
+        });
+    }
+    
+    
 
 /** _______________ Renderizadores _______________*/
 
@@ -568,62 +602,116 @@ function createOptionSku(array){
         graphicPurchase(purchase);
 
     };
-
-    /** Función para construir la gráfica de comparación */
-    function buildGraphic( kpi ){
-
-        kpiActual = kpi
-
+    
+    let arrayToGraphicUs = dataGeneralxsku
+    function buildGraphicUsability(paises) {
+        // Aquí 'paises' es una lista de nombres de países, por ejemplo: ['Chile', 'Argentina']
+    
         let elementToReturn = {
-            months      :[],
-            diferences  :[]
-        }
+            months: [],
+        };
+    
+        // Crear la estructura inicial para los países
+        paises.forEach(pais => {
+            elementToReturn[pais] = {
+                differences: []
+            };
+        });
+    
+        // Agrupar los datos por mes
+        const createStructure = buildStructureToGraphics(arrayToGraphicUs); // Esta función debe retornar una estructura agrupada por mes
+    
+        // Iterar sobre la estructura agrupada por mes
+        Object.entries(createStructure).forEach(([month, data]) => {
+            elementToReturn.months.push(month);
+    
+            // Iterar sobre los países para llenar los datos de diferencias
+            paises.forEach(pais => {
+                // Filtrar los datos para el país actual en el mes actual
+                let countryData = data.filter(item => item.pais === pais);
+    
+                // Calcular la usabilidad del país para el mes actual
+                if (countryData.length > 0) {
+                    let usabilityData = buildUsabilityByCountry(countryData);
+                    elementToReturn[pais].differences.push(usabilityData[pais].difference);
+                } else {
+                    // Si no hay datos para el país en este mes, agregar un valor por defecto, por ejemplo 0
+                    elementToReturn[pais].differences.push(0);
+                }
+            });
+        });
+    
+        // Llamar a la función para renderizar el gráfico
+        renderComparationGraphicUsability(elementToReturn, paisActual);
+        return elementToReturn;
+     
+    }
+     buildGraphicUsability(paisActual);
+        
+
+
+
+    /** Función para construir la gráfica de kpi por país */
+    function buildGraphic(kpis) {
+        kpiActual = kpis;
+        let newArray = dataGeneralxsku;
+        let elementToReturn = {
+            months: [],
+        };
+    
         const createStructure = buildStructureToGraphics(arrayToGraphic);
-
-        switch(kpi){
-            case 'usabilidad':
-                Object.entries(createStructure).forEach(([key])=>{
-                    elementToReturn.months.push(key);
-                    elementToReturn.diferences.push( buildUsability(createStructure[key]).diference )
-                });
-                break;
-            case 'duracion_sesion':
-                Object.entries(createStructure).forEach(([key])=>{
-                    elementToReturn.months.push(key);
-                    elementToReturn.diferences.push( buildEngagement(createStructure[key]).diference )
-                });
-                break;
-            case 'añadir_al_carrito':
-                Object.entries(createStructure).forEach(([key])=>{
-                    elementToReturn.months.push(key);
-                    elementToReturn.diferences.push( buildAddToCar(createStructure[key]).diference )
-                });
-                break;
-            case 'conversion':
-                Object.entries(createStructure).forEach(([key])=>{
-                    elementToReturn.months.push(key);
-                    elementToReturn.diferences.push( buildPurchase(createStructure[key]).diference )
-                });
-                break;
-        }
-        renderComparationGraphic(elementToReturn,kpi)
-    };
-
+    
+        kpis.forEach(kpi => {
+            elementToReturn[kpi] = {
+                diferences: []
+            };
+        });
+    
+        let countryAdded = false;
+    
+        Object.entries(createStructure).forEach(([key, value]) => {
+            elementToReturn.months.push(key);
+            
+            kpis.forEach(kpi => {
+                switch (kpi) {
+                    case 'usabilidad':
+                        elementToReturn[kpi].diferences.push(buildUsability(value).diference);
+                        break;
+                    case 'añadir al carrito':
+                        elementToReturn[kpi].diferences.push(buildAddToCar(value).diference);
+                        break;
+                    case 'conversion':
+                            elementToReturn[kpi].diferences.push(buildPurchase(value).diference);
+                        break;    
+                    // Agrega más casos si hay más KPI
+                }
+            });
+    
+            // Añadir el país solo una vez
+            if (!countryAdded) {
+                elementToReturn.pais = buildUsability(value).paises;
+                countryAdded = true;
+            }
+        });
+        renderComparationGraphic(elementToReturn, kpis);
+        return elementToReturn;
+    }
 
 
 
 /** Eventos que actualiza la información */
-document.body.querySelector('.selectCountry' ).addEventListener('input', ()=>{filterProcess(); buildGraphic(kpiActual); buildInfoDevice()} , false);
+document.body.querySelector('.selectCountry' ).addEventListener('input', ()=>{filterProcess();buildGraphic(kpiActual)} , false);
 document.body.querySelector('.selectDate'    ).addEventListener('input', filterProcess , false);
 document.body.querySelector('.selectCategory').addEventListener('input', filterProcess , false);
 document.body.querySelector('.selectSku').addEventListener('input', filterProcess , false);
 
 /** Evento que construye la gráfica */
-document.body.querySelector('.kpiSelect').addEventListener('input', (e)=>{buildGraphic(e.target.value);  buildInfoDevice();} , false);
+document.body.querySelector('.kpiSelect').addEventListener('input', (e)=>{buildGraphic(e.target.value);} , false);
 
 filterProcess();
 buildGraphic(kpiActual);
-buildInfoDevice();
+buildGraphicUsability(paisActual);
+// buildInfoDevice();
 // buildComparationCountry()
 
 

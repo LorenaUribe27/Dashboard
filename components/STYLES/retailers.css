@@ -17,113 +17,236 @@ body {
 .mainClass {
     width: 100%;
     height: 100%;
-}
-
-/* seccion 1 */
-.containerLogos {
-    width: 100%;
-    height: 10%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    background-color: white;
-}
-
-.containerLogos img {
-    border: solid var(--primaryColor) 2px;
-}
-
-.retailLogo {
-    width: 120px;
-    height: 90%;
-    margin: 0px 15px;
-    background-position: center;
-    background-size: contain;
-    background-repeat: no-repeat;
-    cursor: pointer;
-    border-radius: 10px;
-}
-
-.retailLogo:hover {
-    border: solid 2px var(--thirdColor);
-}
-
-
-/*sección 2 */
-.listProducst {
-    width: 100%;
-    height: 90%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.titles {
-    display: flex;
-    width: 90%;
-    height: max-content;
-    background-color: var(--secondaryColor);
-    border-radius: 10px;
-    margin: 0px auto;
-}
-
-.cointerRenderProducts {
-    display: flex;
-    flex-direction: column;
-    width: 90%;
-    margin: 0 auto;
-}
-
-.containerPrincipal {
-    width: 100%;
-    height: max-content;
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.containerCardRetailer {
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    -webkit-box-shadow: 4px 14px 52px -29px rgba(0, 0, 0, 0.282);
+    -moz-box-shadow: 4px 14px 52px -29px rgba(0, 0, 0, 0.282);
+    box-shadow: 4px 14px 52px -29px rgba(0, 0, 0, 0.282);
+    border: solid 3px var(--primaryColor);
+    padding: 10px;
     border-radius: 10px;
+}
+
+.logoRetail {
+    width: 70%;
+    background-color: white;
+    border-radius: 20px;
+    height: auto;
     margin: 10px 0px;
-    border: solid 2px var(--thirdColor);
-    border-right: none;
+    height: 50px;
+    padding: 10px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.containerCardRetail {
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    margin-bottom: 15px;
+    border-radius: 10px;
     overflow: hidden;
 }
 
-.nameProductTitle,
-.eanProductTitle,
-.creationDateProductTitle,
-.productStatusProductTitle {
-    width: 25%;
-    height: 55px;
-    padding-left: 15px;
+.paragraphRetail {
+    width: 100%;
     font-weight: 800;
-    color: white;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    border-right: solid white 2px;
+    font-size: 17px;
+    border-bottom: 2px solid var(--thirdColor);
+    text-align: center;
+    padding: 10px 0px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
 }
 
-.nameProduct,
-.eanProduct,
-.creationDateProduct,
-.productStatusProduct {
-    width: 25%;
-    height: 55px;
-    padding-left: 15px;
-    font-weight: 800;
+.valueretailers {
     color: var(--primaryColor);
+    font-size: 15px;
+}
+
+.productListbutton {
+    background-color: var(--thirdColor);
+    padding: 10px;
+    color: white;
+    outline: none;
+    border: none;
+    font-weight: 800;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.modalListProduct {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: #000000b3;
+    backdrop-filter: blur(8px);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.closePopUp {
+    position: absolute;
+    right: 1.5%;
+    top: 3.1%;
+    font-weight: 800;
+    font-size: 20px;
+    color: white;
+    cursor: pointer;
+    background-color: var(--secondaryColor);
+    border-radius: 50px;
+    padding: 7px 10px;
+
+}
+
+.containerInfoList {
     display: flex;
+    width: 100%;
     justify-content: flex-start;
     align-items: center;
-    border-right: solid var(--thirdColor) 2px;
+    height: 10%;
+    background-color: var(--primaryColor);
+    gap: 2%;
+}
+
+.containerInfoList img {
+    height: 65%;
+    margin-left: 2%;
+    background-color: white;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.totalListProduct {
+    background-color: var(--thirdColor);
+    padding: 7px;
+    border-radius: 5px;
+    color: white;
+}
+
+.containerProducts {
+    width: 60%;
+    margin: 1% auto;
     background-color: white;
 }
 
-.registryVisible {
-    color: rgb(2, 139, 2);
+.titleProductList {
+    width: 100%;
+    height: auto;
+    margin: 5px 0px;
+    display: flex;
+    justify-content: space-between;
+    position: relative;
 }
 
-.registryUnabled {
-    color: rgb(195, 1, 1);
+.productNameList {
+    width: 79%;
+    text-align: start;
+    padding: 10px 0px;
+    font-weight: 800;
+    background-color: var(--thirdColor);
+    color: white;
+    border: solid white 2px;
+    padding-left: 1%;
+    font-size: 18px;
+}
+
+.productNameList2 {
+    width: 20%;
+    text-align: center;
+    padding: 10px 0px;
+    font-weight: 800;
+    background-color: var(--thirdColor);
+    color: white;
+    border: solid white 2px;
+    font-size: 18px;
+}
+
+.listPrincipalProducts {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    margin: 0 auto;
+    background-color: white;
+    max-height: 80vh;
+    overflow-y: scroll;
+
+}
+
+.listPrincipalProducts::-webkit-scrollbar {
+    width: 5px;
+    margin: 0 2.5px;
+}
+
+.listPrincipalProducts::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.listPrincipalProducts::-webkit-scrollbar-thumb {
+    background: var(--secondaryColor);
+    border-radius: 10px;
+}
+
+.listProductCotainerModal {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.listProductCotainerModal:last-of-type {
+    margin-bottom: 10px;
+}
+
+.modalNameProduct {
+    width: 79%;
+    text-align: start;
+    border-bottom: solid 2px var(--primaryColor);
+    margin-left: .5%;
+    font-weight: 600;
+    font-size: 17px;
+    padding: 5px 0px;
+}
+
+.publish {
+    background-color: rgb(3, 97, 3);
+    width: 19.5%;
+    height: 100%;
+    padding: 5px 0px;
+    text-align: center;
+    font-weight: 800;
+    color: white;
+}
+
+.pause {
+    background-color: rgb(192, 4, 4);
+    width: 19.5%;
+    height: 100%;
+    padding: 5px 0px;
+    text-align: center;
+    font-weight: 800;
+    color: white;
 }

@@ -110,7 +110,8 @@ function buildPurchase(array){
 /** Función pora construir la estructura de la tabla comparativa por paises */
 function buildStructureToTable({mes,category}){
 
-    let elementToReturn = {}, newArray = dataGeneralxsku ;
+    let elementToReturn = {},
+    newArray = dataGeneralxsku ;
 
     if( mes !== "null" ){ newArray = newArray.filter(registry => mes == registry.Mes) };
     if( category !== "null"){ newArray = newArray.filter(registry => category == registry.categoria  )}
@@ -123,15 +124,16 @@ function buildStructureToTable({mes,category}){
         let registry = newArray.filter( registry => registry.pais == key)
         elementToReturn[key] = registry;
     })
-
+    console.log(elementToReturn);
     return elementToReturn;
+    
 };
 
 /** _______________ Renderes _____________ */
 
     /** render usabilidad gráfica */
     function renderGraphicUsability( values ){
-
+        console.log(values);
         /** Limpieza de la gráfica */
         document.getElementById('graphicUsabilidad').remove();
 
