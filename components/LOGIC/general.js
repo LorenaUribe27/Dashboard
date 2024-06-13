@@ -203,29 +203,36 @@ function createOptionSku(array){
     };
 
     /** Función para construir el purchase apartir de un array de registros */
-    function buildPurchase(array){
-
+    function buildPurchase(array) {
         let elementToReturn = {
-            paises:null,
+            paises: null,
             with: 0,
             withOut: 0,
-            diference :0,
-            numberTransactionsWI: 0, 
-            numberTransactionsWIO: 0
+            diference: 0,
+            numberTransactionsWI: 0,
+            numberTransactionsWIO: 0,
+            sessionsWith: 0,
+            sessionesWithout: 0
+        };
+    
+        array.forEach(element => {
+            elementToReturn.sessionsWith += element.conInteraccion;
+            elementToReturn.sessionesWithout += element.sinInteraccion;
+            elementToReturn.with += element.TransaccionesConInteraccion;
+            elementToReturn.withOut += element.TransaccionesSinInteraccion;
+            elementToReturn.numberTransactionsWI += element.NumeroTransaccionesCon;
+            elementToReturn.numberTransactionsWIO += element.NumeroTransaccionesSin;
+        });
+    
+        elementToReturn.with = elementToReturn.sessionsWith > 0 ? (elementToReturn.numberTransactionsWI / elementToReturn.sessionsWith).toFixed(3) : 0;
+        elementToReturn.withOut = elementToReturn.sessionesWithout > 0 ? (elementToReturn.numberTransactionsWIO / elementToReturn.sessionesWithout).toFixed(3) : 0;
+    
+        // Validar que elementToReturn.withOut no sea cero para evitar división por cero
+        if (elementToReturn.withOut > 0) {
+            elementToReturn.diference = (elementToReturn.with / elementToReturn.withOut * 100).toFixed(0);
+        } else {
+            elementToReturn.diference = 0;
         }
-
-        array.forEach(element => {    
-            elementToReturn.with                   += element.TransaccionesConInteraccion;
-            elementToReturn.withOut                += element.TransaccionesSinInteraccion;
-            elementToReturn.numberTransactionsWI   += element.NumeroTransaccionesCon;
-            elementToReturn.numberTransactionsWIO  += element.NumeroTransaccionesSin;
-            // elementToReturn                         = element.Pais;
-        })
-        
-        elementToReturn.with        = (elementToReturn.with/array.length).toFixed(3);
-        elementToReturn.withOut     = (elementToReturn.withOut/array.length).toFixed(3);
-        elementToReturn.diference   = (elementToReturn.with/elementToReturn.withOut*100).toFixed(0);
-      
         return elementToReturn;
     };
 
@@ -490,7 +497,6 @@ function createOptionSku(array){
 
     /** Función para renderizar la gráfica para la comparación de Usabilidad  */
     function renderComparationGraphicUsability(data, paises) {
-        console.log(data);
     
         // Remover el canvas existente
         const existingCanvas = document.getElementById('chartCountryUsability');
@@ -574,7 +580,10 @@ function createOptionSku(array){
         
         document.body.querySelector('.addToCarWith').innerHTML      = `Con interacción: <span class="valorKPI"> ${addToCar.numberSessionWI}(${addToCar.with}%)</span>`;
         document.body.querySelector('.addToCarWithOut').innerHTML   = `Sin interacción: <span class="valorKPI">${addToCar.numberSessionWIO}(${addToCar.withOut}%)</span>`;
-        document.body.querySelector('.diferenceAddToCar').innerHTML = `% Diferencia : ${addToCar.diference}%`;
+
+       addToCar.withOut > 0 
+       ?(document.body.querySelector('.diferenceAddToCar').innerHTML = `% Diferencia : ${addToCar.diference}%`)
+       :(document.body.querySelector('.diferenceAddToCar').innerHTML = `% Diferencia : 0%`)
 
         /** Imprimiendo la conversión Con y Sin  interacción */
         document.body.querySelector('.purchaseWith').innerHTML      = `Con interacción: <span class="valorKPI">${purchase.numberTransactionsWI}(${(purchase.numberTransactionsWI/usability.with).toFixed(3)}%)</span>`;
@@ -586,8 +595,10 @@ function createOptionSku(array){
         const sinInteraccion             = document.body.querySelector('.purchaseWithOut');
         const purchaseWOIPercentage      = parseFloat(sinInteraccion.querySelector('.valorKPI').textContent.match(/\((\d+\.\d+)\%\)/)[1]);
         const diferencia                 = (purchaseWithPercentage / purchaseWOIPercentage *100).toFixed(0);
-
-        document.body.querySelector('.diferencePurchase').innerHTML = `% Diferencia : ${diferencia}%`;
+   
+        purchaseWOIPercentage > 0 
+        ?(document.body.querySelector('.diferencePurchase').innerHTML = `% Diferencia : ${diferencia}%`)
+        : (document.body.querySelector('.diferencePurchase').innerHTML = `% Diferencia : 0%`)
 
         /** Renderizar la gráfica de usabilidad */
         graphicUsability(usability);
@@ -646,7 +657,7 @@ function createOptionSku(array){
         return elementToReturn;
      
     }
-     buildGraphicUsability(paisActual);
+    
         
 
 
@@ -711,9 +722,6 @@ document.body.querySelector('.kpiSelect').addEventListener('input', (e)=>{buildG
 filterProcess();
 buildGraphic(kpiActual);
 buildGraphicUsability(paisActual);
-// buildInfoDevice();
-// buildComparationCountry()
-
 
 
 
