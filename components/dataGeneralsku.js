@@ -8299,7 +8299,7 @@ let dataGeneralxsku = [
   },
   {
     pais: "Chile",
-    categoria: "Cocción",
+    categoria: "Estufas",
     sku: "HM6018EXAI",
     sinInteraccion: 0,
     conInteraccion: 0,
@@ -8317,7 +8317,7 @@ let dataGeneralxsku = [
   },
   {
     pais: "Chile",
-    categoria: "Cocción",
+    categoria: "Estufas",
     sku: "CMG6044SD",
     sinInteraccion: 1168,
     conInteraccion: 21,
@@ -8335,7 +8335,7 @@ let dataGeneralxsku = [
   },
   {
     pais: "Chile",
-    categoria: "Cocción",
+    categoria: "Estufas",
     sku: "ANDES7650FX1",
     sinInteraccion: 167,
     conInteraccion: 10,
@@ -8353,7 +8353,7 @@ let dataGeneralxsku = [
   },
   {
     pais: "Chile",
-    categoria: "Cocción",
+    categoria: "Estufas",
     sku: "CMC5550AX0",
     sinInteraccion: 361,
     conInteraccion: 26,
@@ -8371,7 +8371,7 @@ let dataGeneralxsku = [
   },
   {
     pais: "Chile",
-    categoria: "Cocción",
+    categoria: "Estufas",
     sku: "CMC20AXX",
     sinInteraccion: 482,
     conInteraccion: 18,
@@ -8389,7 +8389,7 @@ let dataGeneralxsku = [
   },
   {
     pais: "Chile",
-    categoria: "Cocción",
+    categoria: "Estufas",
     sku: "CMC5110AX0",
     sinInteraccion: 294,
     conInteraccion: 24,
@@ -8407,7 +8407,7 @@ let dataGeneralxsku = [
   },
   {
     pais: "Chile",
-    categoria: "Cocción",
+    categoria: "Estufas",
     sku: "CMC20ABX",
     sinInteraccion: 741,
     conInteraccion: 12,

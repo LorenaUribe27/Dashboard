@@ -15,10 +15,9 @@ logosMarca = {
    
     Lagobo             : { name:"Lagobo          " , products : [] , urlMedia:'https://www.lagobo.com/wp-content/uploads/2017/12/logo-LAGOBO.png' },
     Metro              : { name:"Metro           " , products : [] , urlMedia:'https://metrocolombiaio.vtexassets.com/arquivos/logo-metro-2023.svg' },
-    MuyBacano          : { name:"MuyBacano       " , products : [] , urlMedia: null },
+    MuyBacano          : { name:"MuyBacano       " , products : [] , urlMedia: 'https://muybacano.vtexassets.com/assets/vtex.file-manager-graphql/images/1ea9e6b1-7211-4a64-bf37-044f06204984___97605d1e60181423a9bfa131d3b07687.png' },
     Olimpica           : { name:"Olimpica        " , products : [] , urlMedia:'https://upload.wikimedia.org/wikipedia/commons/4/4c/Olimpical.png' },
     Pepeganga          : { name:"Pepeganga       " , products : [] , urlMedia:'https://pepeganga.vtexassets.com/assets/vtex.file-manager-graphql/images/b49c4ce8-3145-4a67-8a83-15730c984d01___f3be2873ec452b1351ce8289bc00b7c2.svg' },
-    Bodesa             : { name:"Bodesa          " , products : [] , urlMedia:'https://lamarinamx.vtexassets.com/assets/vtex.file-manager-graphql/images/eab198b8-fcff-44c1-8515-8085e33c3de8___1e01bf3dd928f47721141d805b49bf51.png' }
 }
 
 /** Tomamos todas los retailers */

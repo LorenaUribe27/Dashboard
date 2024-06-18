@@ -1,5 +1,4 @@
 import dataGeneralxsku from '../dataGeneralsku.js';
-import device from '../dispositivo.js';
 
 /** Variables */
 let 
@@ -8,7 +7,10 @@ arrayToGraphic=[] ,
 arrayToTable=[],
 arrayToGraphicAll =[],
 kpiActual = ['usabilidad','añadir al carrito','conversion'],
-paisActual =['Colombia','México','Chile','Perú'];
+paisActual =['Colombia','México','Chile','Perú'],
+paisActualCat =['Colombia','México','Chile','Perú']
+// categoryActual = ['Aires','Calentadores','Campanas','Lavado','Refrigeración','Empotre','Estufas','Globales','Congelador']
+
 
 /** Actualizar los valores del filtro */
 function updateValuesFilters(){
@@ -100,14 +102,47 @@ function createOptionSku(array){
             let countryData = countriesData[country];
             countryData.difference = ((countryData.with / (countryData.withOut + countryData.with)) * 100).toFixed(0);
         }
-    
         return countriesData;
+        
     }
     buildUsabilityByCountry(dataGeneralxsku);
     
-
-
-
+    function buildUsabilityByCountryAndCategory(array) {
+        let countriesData = {};
+    
+        array.forEach((registry) => {
+            if (!countriesData[registry.pais]) {
+                countriesData[registry.pais] = {};
+            }
+    
+            if (!countriesData[registry.pais][registry.categoria]) {
+                countriesData[registry.pais][registry.categoria] = {
+                    with: 0,
+                    withOut: 0,
+                    difference: 0
+                };
+            }
+    
+            countriesData[registry.pais][registry.categoria].with += registry.conInteraccion;
+            countriesData[registry.pais][registry.categoria].withOut += registry.sinInteraccion;
+        });
+    
+        // Calculamos la diferencia para cada país y categoría
+        for (let country in countriesData) {
+            for (let category in countriesData[country]) {
+                let categoryData = countriesData[country][category];
+                let total = categoryData.with + categoryData.withOut;
+                if (total > 0) {
+                    categoryData.difference = ((categoryData.with / total) * 100).toFixed(0);
+                } else {
+                    categoryData.difference = null;
+                }
+            }
+        }
+        return countriesData;
+    }
+    
+     buildUsabilityByCountryAndCategory(dataGeneralxsku);
 
     // Función usabilidad general
     function buildUsability(array){
@@ -497,7 +532,6 @@ function createOptionSku(array){
 
     /** Función para renderizar la gráfica para la comparación de Usabilidad  */
     function renderComparationGraphicUsability(data, paises) {
-    
         // Remover el canvas existente
         const existingCanvas = document.getElementById('chartCountryUsability');
         if (existingCanvas) {
@@ -552,6 +586,123 @@ function createOptionSku(array){
                 barThickness: 100
             }
         });
+    }
+    
+    function renderCategoryGraphicUsability(data, selectedCountry) {
+        console.log(data);
+        // Remover el canvas existente
+        document.body.querySelector('#CategoryGraphic').remove();
+        // Crear y añadir un nuevo canvas
+        const canvas = document.createElement('CANVAS');
+        canvas.id = 'CategoryGraphic';
+        canvas.classList.add('CategoryGraphicClass');
+        document.body.querySelector('.containerCategoryGraphic').appendChild(canvas);
+    
+        var ctx = document.getElementById('CategoryGraphic').getContext('2d');
+    
+        // Colores predefinidos para las categorías
+        const predefinedColors = [
+            '#007297', // Color 1
+            '#f47920', // Color 2
+            '#ffaf00', // Color 3
+            '#bf0e09', // Color 4
+            '#606060', // Color 5
+            '#19212b', // Color 6
+            '#154259'  // Color 7
+        ];
+    
+        // Crear los datasets para el país seleccionado y sus categorías
+        const datasets = [];
+        const categoryColors = {};
+    
+        if (data.hasOwnProperty(selectedCountry)) {
+            const months = Object.keys(data[selectedCountry]);
+    
+            // Filtrar las categorías que tienen valores diferentes de 0 o '0'
+            const validCategories = Object.keys(data[selectedCountry][months[0]]).filter(category => {
+                return months.some(month => {
+                    const value = data[selectedCountry][month][category];
+                    return value !== undefined && value !== '' && value !== 'NaN' && value !== null && value !== '0';
+                });
+            });
+    
+            validCategories.forEach(category => {
+                // Asignar un color a la categoría si no se ha asignado aún
+                if (!categoryColors.hasOwnProperty(category)) {
+                    categoryColors[category] = predefinedColors[Object.keys(categoryColors).length % predefinedColors.length];
+                }
+                const color = categoryColors[category];
+    
+                const categoryData = {
+                    label: category,
+                    data: [],
+                    backgroundColor: color,
+                    borderColor: color, // Usar el mismo color para el borde
+                    fill: false,
+                    pointRadius: 3,
+                    pointHoverRadius: 3
+                };
+    
+                months.forEach(month => {
+                    const value = parseFloat(data[selectedCountry][month][category]) || 0;
+                    categoryData.data.push(value);
+                });
+    
+                datasets.push(categoryData);
+            });
+        }
+    
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.months, // Utilizar los meses proporcionados en los datos
+                datasets: datasets
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    },
+                    title: {
+                        display: true,
+                        text: `Categorías por país: ${selectedCountry}`,
+                        color: '#0082ac',
+                        font: {
+                            size: 18
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: false,
+                        }
+                    },
+                    x: {
+                        type: 'category', // Asegura que el tipo del eje x sea 'category'
+                        title: {
+                            display: false,
+                        }
+                    }
+                },
+                barThickness: 100
+            }
+        });
+    }
+    // Función para obtener los meses únicos del conjunto de datos
+    function getUniqueMonths(data) {
+        const validMonths = ['Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo'];
+        let monthsSet = new Set();
+        for (let country in data) {
+            for (let month in data[country]) {
+                if (validMonths.includes(month)) {
+                    monthsSet.add(month);
+                }
+            }
+        }
+        return Array.from(monthsSet).sort((a, b) => validMonths.indexOf(a) - validMonths.indexOf(b)); // Ordena según la lista de meses válida
     }
     
     
@@ -614,54 +765,6 @@ function createOptionSku(array){
 
     };
     
-    let arrayToGraphicUs = dataGeneralxsku
-    function buildGraphicUsability(paises) {
-        // Aquí 'paises' es una lista de nombres de países, por ejemplo: ['Chile', 'Argentina']
-    
-        let elementToReturn = {
-            months: [],
-        };
-    
-        // Crear la estructura inicial para los países
-        paises.forEach(pais => {
-            elementToReturn[pais] = {
-                differences: []
-            };
-        });
-    
-        // Agrupar los datos por mes
-        const createStructure = buildStructureToGraphics(arrayToGraphicUs); // Esta función debe retornar una estructura agrupada por mes
-    
-        // Iterar sobre la estructura agrupada por mes
-        Object.entries(createStructure).forEach(([month, data]) => {
-            elementToReturn.months.push(month);
-    
-            // Iterar sobre los países para llenar los datos de diferencias
-            paises.forEach(pais => {
-                // Filtrar los datos para el país actual en el mes actual
-                let countryData = data.filter(item => item.pais === pais);
-    
-                // Calcular la usabilidad del país para el mes actual
-                if (countryData.length > 0) {
-                    let usabilityData = buildUsabilityByCountry(countryData);
-                    elementToReturn[pais].differences.push(usabilityData[pais].difference);
-                } else {
-                    // Si no hay datos para el país en este mes, agregar un valor por defecto, por ejemplo 0
-                    elementToReturn[pais].differences.push(0);
-                }
-            });
-        });
-    
-        // Llamar a la función para renderizar el gráfico
-        renderComparationGraphicUsability(elementToReturn, paisActual);
-        return elementToReturn;
-     
-    }
-    
-        
-
-
-
     /** Función para construir la gráfica de kpi por país */
     function buildGraphic(kpis) {
         kpiActual = kpis;
@@ -709,19 +812,126 @@ function createOptionSku(array){
     }
 
 
-
+    let arrayToGraphicUs = dataGeneralxsku
+    function buildGraphicUsability(paises) {
+        // Aquí 'paises' es una lista de nombres de países, por ejemplo: ['Chile', 'Argentina']
+    console.log(paises);
+        let elementToReturn = {
+            months: [],
+        };
+    
+        // Crear la estructura inicial para los países
+        paises.forEach(pais => {
+            elementToReturn[pais] = {
+                differences: []
+            };
+        });
+    
+        // Agrupar los datos por mes
+        const createStructure = buildStructureToGraphics(arrayToGraphicUs); // Esta función debe retornar una estructura agrupada por mes
+    
+        // Iterar sobre la estructura agrupada por mes
+        Object.entries(createStructure).forEach(([month, data]) => {
+            elementToReturn.months.push(month);
+    
+            // Iterar sobre los países para llenar los datos de diferencias
+            paises.forEach(pais => {
+                // Filtrar los datos para el país actual en el mes actual
+                let countryData = data.filter(item => item.pais === pais);
+    
+                // Calcular la usabilidad del país para el mes actual
+                if (countryData.length > 0) {
+                    let usabilityData = buildUsabilityByCountry(countryData);
+                    elementToReturn[pais].differences.push(usabilityData[pais].difference);
+                } else {
+                    // Si no hay datos para el país en este mes, agregar un valor por defecto, por ejemplo 0
+                    elementToReturn[pais].differences.push(0);
+                }
+            });
+        });
+    
+        // Llamar a la función para renderizar el gráfico
+        renderComparationGraphicUsability(elementToReturn, paisActual)
+        return elementToReturn
+     
+    }
+    
+        
+    /** Función para construir la gráfica de kpi por país */
+    function buildGraphicCategory(paises) {
+        let elementToReturn = {
+            months: [],
+        };
+        console.log(paises);
+    
+        // Crear la estructura inicial para los países
+        paises.forEach(pais => {
+            elementToReturn[pais] = {};
+        });
+    
+        const createStructure = buildStructureToGraphics(arrayToGraphicUs); // Esta función debe retornar una estructura agrupada por mes
+        const selectedCountry = document.querySelector('.selectCountry').value;
+    
+        // Iterar sobre la estructura agrupada por mes
+        Object.entries(createStructure).forEach(([month, data]) => {
+            let isValidMonth = false;
+    
+            // Iterar sobre los países para llenar los datos de diferencias por categoría
+            paises.forEach(pais => {
+                if (!elementToReturn[pais][month]) {
+                    elementToReturn[pais][month] = {};
+                }
+    
+                let countryData = data.filter(item => item.pais === pais && item.categoria !== "Null");
+                if (countryData.length > 0) {
+                    let usabilityData = buildUsabilityByCountryAndCategory(countryData);
+                    // Iterar sobre las categorías actuales y agregar diferencias
+                    Object.keys(usabilityData[pais]).forEach(category => {
+                        if (usabilityData[pais] && usabilityData[pais][category]) {
+                            let difference = usabilityData[pais][category].difference;
+                            if (difference !== null && difference !== 'NaN' && difference !== '' && difference !== '0') {
+                                elementToReturn[pais][month][category] = difference;
+                                isValidMonth = true;
+                            }
+                        }
+                    });
+                }
+            });
+    
+            // Solo agregar el mes si contiene al menos una categoría válida
+            if (isValidMonth) {
+                elementToReturn.months.push(month);
+            } else {
+                // Remover el mes de la estructura si no es válido
+                paises.forEach(pais => {
+                    delete elementToReturn[pais][month];
+                });
+            }
+        });
+    
+        renderCategoryGraphicUsability(elementToReturn, selectedCountry);
+        return elementToReturn;
+    }
+    
 /** Eventos que actualiza la información */
-document.body.querySelector('.selectCountry' ).addEventListener('input', ()=>{filterProcess();buildGraphic(kpiActual)} , false);
-document.body.querySelector('.selectDate'    ).addEventListener('input', filterProcess , false);
-document.body.querySelector('.selectCategory').addEventListener('input', filterProcess , false);
-document.body.querySelector('.selectSku').addEventListener('input', filterProcess , false);
+document.body.querySelector('.selectCountry').addEventListener('input', () => {
+    const selectedCountry = document.querySelector('.selectCountry').value;
+    filterProcess();
+    buildGraphic(kpiActual);
+    renderCategoryGraphicUsability(selectedCountry);
+    buildGraphicCategory(paisActualCat);
+    console.log(selectedCountry);
+}, false);
 
-/** Evento que construye la gráfica */
-document.body.querySelector('.kpiSelect').addEventListener('input', (e)=>{buildGraphic(e.target.value);} , false);
+document.body.querySelector('.selectDate'    ).addEventListener('input', filterProcess , false);
+document.body.querySelector('.selectCategory').addEventListener('change', filterProcess);
+document.body.querySelector('.selectCategory').addEventListener('input', () => {filterProcess();}, false);
 
 filterProcess();
 buildGraphic(kpiActual);
 buildGraphicUsability(paisActual);
+buildGraphicCategory(paisActual);
+
 
 
 

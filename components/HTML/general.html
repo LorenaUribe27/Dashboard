@@ -71,7 +71,7 @@
                 </svg>
 
                 <select class="selectDate selectGeneral">
-                    <option value="null">Seleccione Mes</option>
+                    <option value="null">Todos los Meses</option>
                     <option value="Agosto">Agosto 2023</option>
                     <option value="Septiembre">Septiembre 2023</option>
                     <option value="Octubre">Octubre 2023</option>
@@ -103,7 +103,7 @@
                 </svg>
 
                 <select class="selectCategory selectGeneral">
-                    <option value="null">Seleccione Categoría</option>
+                    <option value="null">Todas las categorías</option>
                     <option value="Aires">Aires</option>
                     <option value="Calentadores">Calentadores</option>
                     <option value="Campanas">Campanas</option>
@@ -210,7 +210,7 @@
     <section class="containerHistoric">
 
         <!-- Area de filtros -->
-        <div class="filterArea" >
+        <div class="filterArea">
 
             <div class="kpiSelect filterGeneral" title="Seleccione un KPI">
 
@@ -226,7 +226,7 @@
                             </path>
                         </g>
                     </g>
-                </svg> <label class="selectGeneral">Indicadores</label>
+                </svg> <label class="selectGeneral">Indicadores por país</label>
 
                 <select class="selectGeneral kpiSelect" style="display: none;">
                     <option value="usabilidad">Usabilidad</option>
@@ -246,16 +246,54 @@
             <div class="containerHistoricGraphic">
                 <canvas id="historicGraphic" class="historicGraphicClass"></canvas>
             </div>
-
-            <!-- por dispositovos -->
-            <div class="containerGraphicUsability">
-                <canvas id="chartCountryUsability" class="graphicTableUsability"></canvas>
+            <!-- categorías -->
+            <div class="containerCategoryGraphic">
+                <canvas id="CategoryGraphic" class="CategoryGraphicClass"></canvas>
             </div>
+
 
         </div>
 
     </section>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Gráfica por categorías -->
+    <section class="containerHistoric">
+        <!-- Area de filtros -->
+        <div class="filterArea">
+
+            <div class="kpiSelect filterGeneral" title="">
+
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                    class="iconFilter" viewBox="0,0,256,256">
+                    <g fill="#0082ac" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt"
+                        stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0"
+                        font-family="none" font-weight="none" font-size="none" text-anchor="none"
+                        style="mix-blend-mode: normal">
+                        <g transform="scale(8,8)">
+                            <path
+                                d="M22,4h-12c-2.76005,0.00331 -4.99669,2.23995 -5,5v14c0.00331,2.76005 2.23995,4.99669 5,5h12c2.76005,-0.00331 4.99669,-2.23995 5,-5v-14c-0.00331,-2.76005 -2.23995,-4.99669 -5,-5zM25,23c0,1.65685 -1.34315,3 -3,3h-12c-1.65685,0 -3,-1.34315 -3,-3v-14c0,-1.65685 1.34315,-3 3,-3h12c1.65685,0 3,1.34315 3,3zM11,18v5c0,0.55228 -0.44772,1 -1,1c-0.55228,0 -1,-0.44772 -1,-1v-5c0,-0.55228 0.44772,-1 1,-1c0.55228,0 1,0.44772 1,1zM15,10v13c0,0.55228 -0.44772,1 -1,1c-0.55228,0 -1,-0.44772 -1,-1v-13c0,-0.55228 0.44772,-1 1,-1c0.55228,0 1,0.44772 1,1zM19,14v9c0,0.55228 -0.44772,1 -1,1c-0.55228,0 -1,-0.44772 -1,-1v-9c0,-0.55228 0.44772,-1 1,-1c0.55228,0 1,0.44772 1,1zM23,18v5c0,0.55228 -0.44772,1 -1,1c-0.55228,0 -1,-0.44772 -1,-1v-5c0,-0.55228 0.44772,-1 1,-1c0.55228,0 1,0.44772 1,1z">
+                            </path>
+                        </g>
+                    </g>
+                </svg> <label class="selectGeneral">Usabilidad por categoría</label>
+            </div>
+
+        </div>
+
+        <div class="contentHistoricGraphic">
+            <div class="contentCategoryGraphic">
+
+
+                <!-- por dispositovos -->
+                <div class="containerGraphicUsability">
+                    <canvas id="chartCountryUsability" class="graphicTableUsability"></canvas>
+                </div>
+            </div>
+        </div>
+
+
+    </section>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </body>
 
